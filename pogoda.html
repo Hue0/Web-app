@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+	
+<head>
+
+	<meta charset="utf-8">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700i|Russo+One&display=swap&subset=latin-ext" rel="stylesheet">
+	<title>AJAX</title>
+</head>
+
+<style>
+
+body{
+	/*background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #fefefe, #fefefe);*/
+	background-image: url(img/sk.jpg);
+	object-fit: cover;
+	margin: 0!important;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.card img{
+	
+	margin-top: 16px;
+	height: 385px;
+	width: 100%;
+	object-fit: cover;
+
+}
+
+.niceBg{
+	background-image: linear-gradient(to right, #ee4908, #f05803, #f36600, #f47400, #f68000, #dc9600, #c0a800, #a2b71c, #55c665, #00cca9, #00cce1, #01c6ff);
+	background-size:cover;
+	margin: auto;
+
+}
+.niceTX{
+	color: #fefefe;
+    padding: 3px;
+    background-color: #868e96;
+    mix-blend-mode: darken;
+    /*font: bolder 22px 'Alfa Slab One'; */
+    font-family: 'Russo One', sans-serif;
+	font-size: 22px !important;
+    text-align: center;
+    
+}
+
+
+#submine{
+	position: relative;
+}
+
+#par2{
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 28px;
+}
+
+.sp{
+	font-family: 'Russo One', sans-serif;
+	font-size: 16px;
+
+}
+.bgNew{
+	background-color: #F9F9F5;
+}
+
+
+.footer{
+	background-image: linear-gradient(to right, #ee4908, #f05803, #f36600, #f47400, #f68000, #dc9600, #c0a800, #a2b71c, #55c665, #00cca9, #00cce1, #01c6ff);;
+	width: 100%;
+	/* position: fixed;
+	bottom: 0; */
+	
+}
+
+#temp {
+	min-height:calc(100vh - 100px);
+}
+.card {
+	height: 700px;
+}
+
+@media screen and (min-width: 993px){
+	#par1{
+		display: none;
+	}
+}
+
+@media screen and (max-width: 992px){
+	#par1{
+		display: none;
+	}
+	#par2{
+		display: none;
+	}
+}
+@media screen and (max-width: 575px){
+	#par1{
+		display: initial;
+		width: 100%;
+	}
+	#par2{
+		display: none;
+	}
+}
+
+
+</style>
+
+<body>
+
+	<div id="mainholder">
+
+		<div id="main">
+			<div id="submine" class="form-inline niceBg mb-2">
+					
+					<input class="form-control col-lg-3 col-md-4 m-3 " id="cityInp" type="text" placeholder="Write the name of the capital">
+				
+					<button id="getBtn" class="btn btn-secondary m-3  col-lg-2 col-md-3 col-sm-2">Send</button>
+
+					<button onclick="window.location.href='compare.html'" class="btn btn-secondary m-3  col-lg-2 col-md-3 col-sm-2">Compare</button>
+
+					<p id="par1" class="niceTX float-right m-3">Weather Aplication</p>
+					<p id="par2" class="niceTX float-right m-3">Weather Aplication</p>
+				
+			</div>
+		</div>
+
+		<div class="container-fluid">	
+
+			<div id="temp" class="row"></div>
+		
+		</div>
+		
+
+	</div>
+	<div class="footer">XXXXX</div>
+
+
+
+
+
+</body>
+
+<script>
+
+	class City{
+	constructor(name, country, temperature, pressure, wind, id){
+		this.name = name;
+		this.country = country;
+		this.temperature = temperature;
+		this.pressure = pressure;
+		this.wind = wind;
+		this.id = id;
+			
+		}
+	}
+
+		
+				var array = [];
+
+				var cityNames = ['London', 'Warsaw', 'Madrid', 'Paris', 'Berlin', 'Rome', 'Vienna', 'Budapest', 'Amsterdam', 'Lisbon', 'Prague', 'Bratislava'];
+				
+				$('#getBtn').click(function(){
+				
+					var city = $("#cityInp").val();
+
+					var cityIsValid = false;
+					for(var i=0; i<cityNames.length; i++){
+						if(city === cityNames[i]){
+							cityIsValid =true;
+
+							break;
+						}
+					}
+					if(cityIsValid === false){
+						
+						alert("Wpisz stolice! Pamiętaj nazwy stolic zaczynają się od dużej litery! Nazwy wpisuj po angielsku.");
+						return;
+					}
+
+
+
+					$.ajax({ /* ajax automatyczni robi json.parse wiec nie parsujemy drugi raz!!, AJAX jest asynchorniczny!!!*/
+
+						method: 'GET',
+
+
+						url: 'https://api.openweathermap.org/data/2.5/weather?q=' + city +'&appid=8b73082f7b6509b01f99db4dbfae848a',
+						success: function(data){
+
+							var nam = data.name;
+							var cnt = data.sys.country;
+							var tmp = data.main.temp;
+							var pre = data.main.pressure;
+							var wnd = data.wind.speed;
+							var newID = data.id;
+
+				
+
+							/*$('#temp').append('<div class="card mt-4 mb-4 col-md-4 bgNew" style="float: left" >'+
+					  		'<img src="img/' + city +'.jpg" class="card-img-top" alt="Card image cap">'+
+					 		'<div class="card-body">'+
+					 		'<p class="card-text">' + '<span class="sp">City:</span>' + ' ' + nam + '</p>'+
+					   		'<p class="card-text">' + '<span class="sp">Country:</span>' + ' ' + cnt + '</p>'+
+					   		'<p class="card-text">' + '<span class="sp">Temperature:</span>' + ' ' + tmp + ' K</p>'+
+					   		'<p class="card-text">' + '<span class="sp">Pressure:</span>' + ' ' + pre + ' hPa</p>'+
+					   		'<p class="card-text">' + '<span class="sp">Wind:</span>' + ' ' + wnd + ' m/s</p>'+
+					   		'<button class="btn btn-secondary cardBtn" name="' + nam + '" country="' + cnt + '" temperature="'+ tmp +'" pressure="'+ pre +'" wind="'+ wnd +'" id="'+ newID +'" >Add City</button>'+
+					  		'</div>' + '</div>');*/
+
+					  		var tmpContent ='<div class="card mt-4 mb-4 col-md-4 bgNew" >'+
+					  		'<img src="img/' + city +'.jpg" class="card-img-top" alt="Card image cap">'+
+					 		'<div class="card-body">'+
+					 		'<p class="card-text">' + '<span class="sp">City:</span>' + ' ' + nam + '</p>'+
+					   		'<p class="card-text">' + '<span class="sp">Country:</span>' + ' ' + cnt + '</p>'+
+					   		'<p class="card-text">' + '<span class="sp">Temperature:</span>' + ' ' + tmp + ' K</p>'+
+					   		'<p class="card-text">' + '<span class="sp">Pressure:</span>' + ' ' + pre + ' hPa</p>'+
+					   		'<p class="card-text">' + '<span class="sp">Wind:</span>' + ' ' + wnd + ' m/s</p>'+
+					   		'<button class="btn btn-secondary cardBtn" name="' + nam + '" country="' + cnt + '" temperature="'+ tmp +'" pressure="'+ pre +'" wind="'+ wnd +'" id="'+ newID +'" >Add City</button>'+
+					  		'</div>' + '</div>';
+
+					  		$(tmpContent).hide().appendTo('#temp').fadeIn("slow");
+
+
+
+							//Lub unbind click a potem bind click druga opcja event.stopImmediatePropagation
+							$('.cardBtn').click(function(event){
+								var n = $(this).attr("name");
+								var c = $(this).attr("country");
+								var t = $(this).attr("temperature");
+								var p = $(this).attr("pressure");
+								var w = $(this).attr("wind");
+								var i = $(this).attr("id");
+								
+
+								var createCity = new City(n,c,t,p,w,i);
+								array.push(createCity);
+								event.stopImmediatePropagation();
+								alert("City was added");
+
+								localStorage.setItem('arr', JSON.stringify(array));
+
+
+							})
+							$('#cityInp').val('');
+
+
+						},
+					
+						error: function(){
+							console.log("Request failed!");
+						}
+
+					});
+
+				});
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</html>

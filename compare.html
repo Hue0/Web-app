@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700i|Russo+One&display=swap&subset=latin-ext" rel="stylesheet">
+	<title>Weather Compare</title>
+</head>
+<style>
+body{
+	font-family: 'Open Sans', sans-serif;
+	background-image: url(img/sk.jpg);
+	object-fit: cover;
+}
+
+.card img{
+	margin-top: 15px;
+	height: 385px;
+	object-fit: cover;
+
+}
+
+.sp{
+	font-family: 'Russo One', sans-serif;
+	font-size: 16px;
+
+}
+.bgNew{
+	background-color: #F9F9F5;
+}
+
+#main{
+	background-image: linear-gradient(to right, #ee4908, #f05803, #f36600, #f47400, #f68000, #dc9600, #c0a800, #a2b71c, #55c665, #00cca9, #00cce1, #01c6ff);
+	margin: 0!important;
+}
+.niceTX{
+	color: #fefefe;
+    padding: 3px;
+    background-color: #868e96;
+    mix-blend-mode: darken;
+    /*font: bolder 22px 'Alfa Slab One'; */
+    font-family: 'Russo One', sans-serif;
+	font-size: 22px !important;
+    text-align: center;
+    
+}
+#par2{
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 28px;
+}
+#par1{
+	width: 100%;
+}
+
+.footer{
+	background-image: linear-gradient(to right, #ee4908, #f05803, #f36600, #f47400, #f68000, #dc9600, #c0a800, #a2b71c, #55c665, #00cca9, #00cce1, #01c6ff);;
+	width: 100%;
+	
+	
+}
+
+
+#tempSec {
+	min-height:calc(100vh - 100px);
+}
+.card {
+	height: 700px;
+}
+
+@media screen and (min-width: 576px){
+	#par1{
+		display: none;
+	}
+}
+
+}
+@media screen and (max-width: 575px){
+	#par2{
+		display: none;
+	}
+	#par1{
+		display: initial;
+		
+	}
+
+}
+
+
+
+	
+</style>
+
+<body>
+
+
+	<div id="main" class="form-inline">	
+		<button onclick="window.location.href='pogoda.html'" class="btn btn-secondary m-3  col-lg-2 col-md-3 col-sm-2">Back</button>
+		<p id="par1" class="niceTX m-3">Weather Aplication</p>
+		<p id="par2" class="niceTX m-3">Weather Aplication</p>
+					
+	</div>
+	<div id="tempSec" class="container-fluid row">
+
+		
+	<div id="holderResult"></div>
+		
+	
+
+	<div id="holder"></div>
+
+	
+	</div>
+	<div class="footer">XXXXX</div>
+</body>
+
+
+<script>
+
+	
+	var tab = JSON.parse(localStorage.getItem('arr'));
+	
+	window.onload = function addCity(){
+
+		$("#holder").html("");
+
+		for(var i=0; i< tab.length; i++ ){
+			//apend miast
+			$('#holder').append('<div class="card mt-4 mb-4 col-md-4 bgNew" style="float: left" >'+
+		  		'<img src="img/' + tab[i].name +'.jpg" class="card-img-top" alt="...">'+
+		 		'<div class="card-body">'+
+		 		'<p class="card-text">' + '<span class="sp">City:</span>' + ' ' + tab[i].name + '</p>'+
+		   		'<p class="card-text">' + '<span class="sp">Country:</span>' + ' ' + tab[i].country + '</p>'+
+		   		'<p class="card-text">' + '<span class="sp">Temperature:</span>' + ' ' + tab[i].temperature + '</p>'+
+		   		'<p class="card-text">' + '<span class="sp">Pressure:</span>' + ' ' + tab[i].pressure + '</p>'+
+		   		'<p class="card-text">' + '<span class="sp">Wind:</span>' + ' ' + tab[i].wind + '</p>'+
+			  	'</div>' + '</div>');
+
+
+		
+		}
+
+		var mxTmp = 0;
+		var mxWin = 0;
+		var mxPre = 0;
+
+		var tmpNam;
+		var winNam;
+		var preNam;
+
+		for(var i=0; i<tab.length; i++){
+			if(tab[i].temperature > mxTmp){
+				mxTmp = tab[i].temperature;
+				tmpNam = tab[i].name;
+				
+			}
+			if(tab[i].wind > mxWin){
+				mxWin = tab[i].wind;
+				winNam = tab[i].name;
+				
+			}
+			if(tab[i].pressure > mxPre){
+				mxPre = tab[i].pressure;
+				preNam = tab[i].name;
+				
+				
+			}
+		}
+
+		$('#holderResult').append('<div class="card mt-4 mb-4 col-md-10 bgNew" style="float: left" >'+
+		  		'<img src="img/result.jpg" class="card-img-top" alt="...">'+
+		 		'<div class="card-body">'+
+		 		'<p class="card-text"> R E S U L T S </p>'+
+		   		'<p class="card-text"><span class="sp">The highest temperature is in' + " " + tmpNam + " " + mxTmp + " " + 'K</span></p>'+
+		   		'<p class="card-text"><span class="sp">The highest wind is in' + " " + winNam + " " + mxWin + " " + 'm/s</span></p>'+
+		   		'<p class="card-text"><span class="sp">The highest pressure is in' + " " + preNam + " " + mxPre + " " + 'hPa</span> </p>'+
+			  	'</div>' + '</div>')
+
+
+
+	};
+	
+
+
+	
+
+
+</script>
+
+</html>
